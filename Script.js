@@ -6,18 +6,32 @@ const botaoMenu = document.getElementById("botaoMenu");
 const navegacao = document.getElementById("navegacao");
 
 botaoMenu.addEventListener("click", () => {
+
     const aberto = navegacao.classList.toggle("aberto");
 
     botaoMenu.setAttribute("aria-expanded", aberto);
+    botaoMenu.setAttribute(
+        "aria-label",
+        aberto ? "Fechar menu" : "Abrir menu"
+    );
+
     botaoMenu.textContent = aberto ? "✕" : "☰";
 });
 
+
 document.querySelectorAll(".navegacao a").forEach(link => {
+
     link.addEventListener("click", () => {
+
         navegacao.classList.remove("aberto");
+
         botaoMenu.setAttribute("aria-expanded", "false");
+        botaoMenu.setAttribute("aria-label", "Abrir menu");
+
         botaoMenu.textContent = "☰";
+
     });
+
 });
 
 
@@ -29,17 +43,28 @@ const botaoTema = document.getElementById("botaoTema");
 const temaSalvo = localStorage.getItem("tema");
 
 if (temaSalvo === "escuro") {
+
     document.body.classList.add("tema-escuro");
     botaoTema.textContent = "☀";
+
 }
 
+
 botaoTema.addEventListener("click", () => {
+
     document.body.classList.toggle("tema-escuro");
 
-    const escuro = document.body.classList.contains("tema-escuro");
+    const escuro =
+        document.body.classList.contains("tema-escuro");
 
-    localStorage.setItem("tema", escuro ? "escuro" : "claro");
-    botaoTema.textContent = escuro ? "☀" : "☾";
+    localStorage.setItem(
+        "tema",
+        escuro ? "escuro" : "claro"
+    );
+
+    botaoTema.textContent =
+        escuro ? "☀" : "☾";
+
 });
 
 
@@ -47,7 +72,8 @@ botaoTema.addEventListener("click", () => {
 // TEXTO DINÂMICO
 // =========================
 
-const textoDinamico = document.getElementById("textoDinamico");
+const textoDinamico =
+    document.getElementById("textoDinamico");
 
 const frases = [
     "Gosto de transformar problemas em soluções através da programação.",
@@ -59,34 +85,50 @@ let fraseAtual = 0;
 let caractereAtual = 0;
 let apagando = false;
 
+
 function escreverTexto() {
+
     const frase = frases[fraseAtual];
 
     if (!apagando) {
+
         textoDinamico.textContent =
             frase.substring(0, caractereAtual + 1);
 
         caractereAtual++;
 
         if (caractereAtual === frase.length) {
+
             apagando = true;
+
             setTimeout(escreverTexto, 2200);
+
             return;
         }
+
     } else {
+
         textoDinamico.textContent =
             frase.substring(0, caractereAtual - 1);
 
         caractereAtual--;
 
         if (caractereAtual === 0) {
+
             apagando = false;
-            fraseAtual = (fraseAtual + 1) % frases.length;
+
+            fraseAtual =
+                (fraseAtual + 1) % frases.length;
+
         }
     }
 
-    setTimeout(escreverTexto, apagando ? 25 : 45);
+    setTimeout(
+        escreverTexto,
+        apagando ? 25 : 45
+    );
 }
+
 
 escreverTexto();
 
@@ -95,110 +137,36 @@ escreverTexto();
 // REVELAÇÃO AO ROLAR
 // =========================
 
-const elementosRevelar = document.querySelectorAll(".revelar");
+const elementosRevelar =
+    document.querySelectorAll(".revelar");
+
 
 const observador = new IntersectionObserver(
     elementos => {
+
         elementos.forEach(elemento => {
+
             if (elemento.isIntersecting) {
+
                 elemento.target.classList.add("visivel");
+
                 observador.unobserve(elemento.target);
+
             }
+
         });
+
     },
-    { threshold: 0.12 }
+    {
+        threshold: 0.12
+    }
 );
 
+
 elementosRevelar.forEach(elemento => {
+
     observador.observe(elemento);
-});
 
-
-// =========================
-// FILTRO DE PROJETOS
-// =========================
-
-const filtros = document.querySelectorAll(".filtro");
-const projetos = document.querySelectorAll(".projeto");
-
-filtros.forEach(filtro => {
-
-    filtro.addEventListener("click", () => {
-
-        filtros.forEach(botao => {
-            botao.classList.remove("ativo");
-        });
-
-        filtro.classList.add("ativo");
-
-        const categoria = filtro.dataset.filtro;
-
-        projetos.forEach(projeto => {
-
-            const categorias =
-                projeto.dataset.categorias.split(" ");
-
-            const mostrar =
-                categoria === "todos" ||
-                categorias.includes(categoria);
-
-            projeto.classList.toggle("oculto", !mostrar);
-        });
-    });
-});
-
-
-// =========================
-// MODAL
-// =========================
-
-const modal = document.getElementById("modalProjeto");
-const fecharModal = document.getElementById("fecharModal");
-const modalTitulo = document.getElementById("modalTitulo");
-const modalDescricao = document.getElementById("modalDescricao");
-
-function abrirModal(titulo, descricao) {
-
-    modalTitulo.textContent = titulo;
-    modalDescricao.textContent = descricao;
-
-    modal.classList.add("aberto");
-    modal.setAttribute("aria-hidden", "false");
-
-    document.body.style.overflow = "hidden";
-}
-
-function fecharModalProjeto() {
-
-    modal.classList.remove("aberto");
-    modal.setAttribute("aria-hidden", "true");
-
-    document.body.style.overflow = "";
-}
-
-document.querySelectorAll(".abrir-modal").forEach(botao => {
-
-    botao.addEventListener("click", () => {
-        abrirModal(
-            botao.dataset.titulo,
-            botao.dataset.descricao
-        );
-    });
-
-});
-
-fecharModal.addEventListener("click", fecharModalProjeto);
-
-modal.addEventListener("click", evento => {
-    if (evento.target === modal) {
-        fecharModalProjeto();
-    }
-});
-
-document.addEventListener("keydown", evento => {
-    if (evento.key === "Escape") {
-        fecharModalProjeto();
-    }
 });
 
 
@@ -206,50 +174,87 @@ document.addEventListener("keydown", evento => {
 // NAVEGAÇÃO ATIVA
 // =========================
 
-const secoes = document.querySelectorAll("main section[id]");
-const linksNavegacao = document.querySelectorAll(".navegacao a");
+const secoes =
+    document.querySelectorAll("main section[id]");
 
-const observadorSecoes = new IntersectionObserver(
-    entradas => {
+const linksNavegacao =
+    document.querySelectorAll(".navegacao a");
 
-        entradas.forEach(entrada => {
 
-            if (!entrada.isIntersecting) return;
+const observadorSecoes =
+    new IntersectionObserver(
+        entradas => {
 
-            linksNavegacao.forEach(link => {
-                link.classList.remove("ativo");
+            entradas.forEach(entrada => {
+
+                if (!entrada.isIntersecting) {
+                    return;
+                }
+
+                linksNavegacao.forEach(link => {
+
+                    link.classList.remove("ativo");
+
+                });
+
+
+                const linkAtivo =
+                    document.querySelector(
+                        `.navegacao a[href="#${entrada.target.id}"]`
+                    );
+
+
+                if (linkAtivo) {
+
+                    linkAtivo.classList.add("ativo");
+
+                }
+
             });
 
-            const linkAtivo = document.querySelector(
-                `.navegacao a[href="#${entrada.target.id}"]`
-            );
+        },
+        {
+            rootMargin: "-35% 0px -55% 0px"
+        }
+    );
 
-            linkAtivo?.classList.add("ativo");
-        });
-    },
-    {
-        rootMargin: "-35% 0px -55% 0px"
-    }
-);
 
 secoes.forEach(secao => {
+
     observadorSecoes.observe(secao);
+
 });
 
 
 // =========================
-// CONTADOR E FORMULÁRIO
+// CONTADOR DE CARACTERES
 // =========================
 
-const campoMensagem = document.getElementById("mensagem");
-const contador = document.getElementById("contador");
-const formulario = document.getElementById("formularioContato");
+const campoMensagem =
+    document.getElementById("mensagem");
+
+const contador =
+    document.getElementById("contador");
+
+
+campoMensagem.addEventListener("input", () => {
+
+    contador.textContent =
+        campoMensagem.value.length;
+
+});
+
+
+// =========================
+// VALIDAÇÃO DO FORMULÁRIO
+// =========================
+
+const formulario =
+    document.getElementById("formularioContato");
+
 const mensagemFormulario =
     document.getElementById("mensagemFormulario");
 
-campoMensagem.addEventListener("input", () => {
-    contador.textContent = campoMensagem.value.length;
-});
 
 formulario.addEventListener("submit", evento => {
 
@@ -264,7 +269,9 @@ formulario.addEventListener("submit", evento => {
     const mensagem =
         campoMensagem.value.trim();
 
+
     if (!nome || !email || !mensagem) {
+
         mensagemFormulario.textContent =
             "Preencha todos os campos antes de enviar.";
 
@@ -274,7 +281,9 @@ formulario.addEventListener("submit", evento => {
         return;
     }
 
+
     if (!email.includes("@") || !email.includes(".")) {
+
         mensagemFormulario.textContent =
             "Digite um endereço de e-mail válido.";
 
@@ -284,9 +293,11 @@ formulario.addEventListener("submit", evento => {
         return;
     }
 
+
     mensagemFormulario.textContent =
         "Mensagem validada com sucesso! Este formulário ainda não envia dados para um servidor.";
 
     mensagemFormulario.className =
         "mensagem-formulario sucesso";
+
 });
